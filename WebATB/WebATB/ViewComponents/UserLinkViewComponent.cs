@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebATB.Data.Entities.Idenity;
+using WebATB.Data.Entities.Identity;
 using WebATB.Models.Account;
 
 namespace WebATB.ViewComponents;

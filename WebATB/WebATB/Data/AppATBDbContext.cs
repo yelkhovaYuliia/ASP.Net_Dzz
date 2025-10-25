@@ -3,35 +3,39 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebATB.Data.Entities;
 using WebATB.Data.Entities.Idenity;
+using WebATB.Data.Entities.Identity;
 
 namespace WebATB.Data;
 
-public class AppATBDbContext : IdentityDbContext<UserEntity, RoleEntity, int,
-    IdentityUserClaim<int>, UserRoleEntity, IdentityUserLogin<int>,
-    IdentityRoleClaim<int>, IdentityUserToken<int>>
+public class AppATBDbContext : IdentityDbContext<UserEntity, RoleEntity, int, IdentityUserClaim<int>, UserRoleEntity, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
 {
     public AppATBDbContext(DbContextOptions<AppATBDbContext> options)
         : base(options)
     {
     }
-
-    public DbSet<CategoryEntity> Categories { get; set; }
-    public DbSet<ProductEntity> Products { get; set; }
-    public DbSet<ProductImageEntity> ProductImages { get; set; }
-
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-        //identity
+        // identity
         builder.Entity<UserRoleEntity>()
-            .HasOne(ur => ur.User)
+            .HasOne(u => u.User)
             .WithMany(u => u.UserRoles)
-            .HasForeignKey(ur => ur.UserId);
+            .HasForeignKey(u => u.UserId);
 
         builder.Entity<UserRoleEntity>()
-            .HasOne(ur => ur.Role)
+            .HasOne(r => r.Role)
             .WithMany(r => r.UserRoles)
-            .HasForeignKey(ur => ur.RoleId);
+            .HasForeignKey(r => r.RoleId);
+
+        builder.Entity<UserEntity>()
+            .HasMany(u => u.Logins)
+            .WithOne()
+            .HasForeignKey(l => l.UserId)
+            .IsRequired();
     }
+
+    public DbSet<CategoryEntity> Categories { get; set; }
+    public DbSet<ProductEntity> Products { get; set; }
+    public DbSet<ProductImageEntity> ProductImages { get; set; }
 }

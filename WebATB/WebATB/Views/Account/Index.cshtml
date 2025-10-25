@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using WebATB.Data.Entities.Identity
+@inject UserManager<UserEntity> UserManager
+
+@if (User.Identity.IsAuthenticated)
+{
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user is not null ? await UserManager.GetRolesAsync(user) : new List<string>();
+
+        <div class="d-flex mt-5">
+            <div>
+            @if (!string.IsNullOrEmpty(user?.Image))
+            {
+                        <div>
+                            <img width="200" height="200" style="border-radius: 50%; object-fit: cover;" src="/avatars/1200_@user.Image" alt="Аватар користувача" />
+                        </div>
+            }
+            else
+            {
+                        <div>
+
+                            <img width="200" height="200" style="border-radius: 50%; object-fit: cover;" src="/no-image-icon.png" alt="Аватар користувача відсутній" />
+                        </div>
+            }
+                <a asp-action="Logout" class="btn btn-primary w-100 mt-3">Вихід</a>
+            </div>
+
+            <div class="mx-3 align-self-center">
+                <p><b>Ім'я:</b> @user?.FirstName</p>
+                <p><b>Прізвище:</b> @user?.LastName</p>
+                <p><b>Електронна пошта:</b> @user?.Email</p>
+
+
+            @if (roles?.Count > 0)
+            {
+                        <p><b>Ролі:</b> @string.Join(", ", roles)</p>
+            }
+            </div>
+        </div>
+
+}
+else
+{
+        <a asp-controller="Account" asp-action="Login" class="btn btn-success">Вхід</a>
+        <a asp-controller="Account" asp-action="Register" class="btn btn-warning">Реєстрація</a>
+}

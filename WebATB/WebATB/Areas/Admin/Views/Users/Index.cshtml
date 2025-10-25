@@ -1,56 +1,158 @@
 @model List<UserItemVM>
-@{
-  ViewData["Title"] = "Basic Tables - Tables";
+
+@section PageStyles {
+        <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css" />
 }
 
-@* ************** Content ************** *@
-<!-- Basic Bootstrap Table -->
-<div class="card">
-  <h5 class="card-header">Користувачі</h5>
-  <div class="table-responsive text-nowrap">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>Фото</th>
-          <th>ПІБ</th>
-          <th>Email</th>
-          <th>Роль</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody class="table-border-bottom-0">
-                @foreach (var user in Model)
-                {
+@section PageScripts {
+        <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+        <script>
+            let table = new DataTable('#tableUsers');
+        </script>
+}
+
+<!-- Data Tables -->
+<div class="col-12">
+    <div class="card overflow-hidden">
+        <div class="table-responsive">
+            <table id="tableUsers" class="table table-sm">
+                <thead>
                     <tr>
-                        <td><span>@user.Id</span></td>
-                        <td>
-                            <div class="avatar avatar-lg pull-up">
-                                <img src="@user.Image" alt="@user.FullName" class="rounded-circle">
-                            </div>
-                        </td>
-                        <td>
-                                @user.Email
-                        </td>
-                        <td>
-                                @if (user.LockoutEnd != null)
-                            {
-                                            <span class="badge rounded-pill bg-label-danger">Banned</span>
-                            }
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ri-more-2-line"></i></button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="javascript:void(0);"><i class="ri-pencil-line me-1"></i> Edit</a>
-                                    <a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-6-line me-1"></i> Delete</a>
-                                </div>
-                            </div>
-                        </td>
+                        <th class="text-truncate">Id</th>
+                        <th class="text-truncate">User</th>
+                        <th class="text-truncate">Email</th>
+                        <th class="text-truncate">Status</th>
+                        <th class="text-truncate">Last logined by</th>
+                        <th class="text-truncate">Role</th>
+                        <th class="text-truncate">Actions</th>
                     </tr>
-                }
-      </tbody>
-    </table>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                            <tr>
+                                <td>@user.Id</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                    @if (!string.IsNullOrEmpty(user.Image))
+                                    {
+                                                <div class="avatar avatar-sm me-4">
+                                                    <img src="@user.Image" alt="Avatar" class="rounded-circle">
+                                                </div>
+                                    }
+                                    else
+                                    {
+                                                <div class="avatar avatar-sm me-4">
+                                                    <img src="@("/no-image-icon.png")" alt="Avatar" class="rounded-circle">
+                                                </div>
+                                    }
+                                        <div>
+                                            <h6 class="mb-0 text-truncate">@user.FullName</h6>
+                                        @* <small class="text-truncate">&#64;amiccoo</small> *@
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                @user.Email
+                                </td>
+                                <td>
+                                @if (user.LockoutEnd != null)
+                                {
+                                            <span class="badge rounded-pill bg-label-danger">Banned</span>
+                                }
+                                else
+                                {
+                                            <span class="badge rounded-pill bg-label-success">Active</span>
+                                }
+                                </td>
+                                <td>
+                                @if (!user.IsGoogleLogin)
+                                {
+                                            <div class="d-flex align-items-center">
+                                                <i class="ri-user-3-line ri-22px text-success me-2"></i>
+                                                <span>Email</span>
+                                            </div>
+                                }
+                                else
+                                {
+                                            <div class="d-flex align-items-center">
+                                                <i class="ri-google-fill ri-22px text-danger me-2"></i>
+                                                <span>Google</span>
+                                            </div>
+                                }
+                                </td>
+                                <td class="text-truncate">
+                                @if (@user.Roles.FirstOrDefault() == "Admin")
+                                {
+                                            <div class="d-flex align-items-center">
+                                                <i class="ri-vip-crown-line ri-22px text-primary me-2"></i>
+                                                <span>@user.Roles.FirstOrDefault()</span>
+                                            </div>
+                                }
+                                else
+                                {
+                                            <div class="d-flex align-items-center">
+                                                <i class="ri-user-3-line ri-22px text-success me-2"></i>
+                                                <span>@user.Roles.FirstOrDefault()</span>
+                                            </div>
+                                }
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ri-more-2-line"></i></button>
+                                        <div class="dropdown-menu">
+                                        @if (user.Roles.Contains("Admin"))
+                                        {
+                                                   <a asp-action="SetUser" asp-route-id="@user.Id" class="dropdown-item"><i class="ri-user-3-line me-1"></i> Make User</a> 
+                                        }
+                                        else
+                                        {
+                                                    <a asp-action="SetAdmin" asp-route-id="@user.Id" class="dropdown-item"><i class="ri-admin-line me-1"></i> Make Admin</a>
+                                        }
+                                        @if (user.LockoutEnd == null)
+                                        {
+                                                    <a asp-action="Ban" asp-route-id="@user.Id" class="dropdown-item"><i class="ri-delete-bin-6-line me-1"></i> Ban</a>
+                                        }
+                                        else
+                                        {
+                                                    <a asp-action="Unban" asp-route-id="@user.Id" class="dropdown-item"><i class="ri-user-follow-line me-1"></i> Unban</a>
+                                        }
+
+                                        </div>
+                                    </div>
+                                </td>
+                            @* <td> *@
+                            @*     <a class="ri-delete-bin-line ri-22px text-danger me-2 cursor-pointer" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="@user.Id"></a> *@
+                            @* </td> *@
+                    </tr>
+                    }
+                    @* Example *@
+            <!--
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="avatar avatar-sm me-4">
+                    <img src="~/admin/img/avatars/1.png" alt="Avatar" class="rounded-circle">
+                  </div>
+                  <div>
+                    <h6 class="mb-0 text-truncate">Jordan Stevenson</h6>
+                    <small class="text-truncate">&#64;amiccoo</small>
+                  </div>
+                </div>
+              </td>
+              <td class="text-truncate">susanna.Lind57&#64;gmail.com</td>
+              <td class="text-truncate">
+                <div class="d-flex align-items-center">
+                  <i class="ri-vip-crown-line ri-22px text-primary me-2"></i>
+                  <span>Admin</span>
+                </div>
+              </td>
+              <td><span class="badge bg-label-warning rounded-pill">Pending</span></td>
+            </tr>
+            -->
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-</div>
-<!--/ Basic Bootstrap Table -->
+  <!--/ Data Tables -->

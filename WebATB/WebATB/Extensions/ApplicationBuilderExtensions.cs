@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebATB.Data;
 using WebATB.Data.Entities.Idenity;
+using WebATB.Data.Entities.Identity;
 
 namespace WebATB.Extensions;
 

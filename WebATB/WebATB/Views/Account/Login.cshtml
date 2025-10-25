@@ -1,0 +1,30 @@
+﻿@model WebATB.Models.Account.LoginViewModel
+
+<h2 class="text-center mt-4">Вхід</h2>
+<form method="post" asp-controller="Account" asp-action="Login" class="col-md-6 offset-md-3">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="UsernameOrEmail" class="form-label"></label>
+        <input asp-for="UsernameOrEmail" type="text" class="form-control" aria-describedby="emailHelp">
+        <span asp-validation-for="UsernameOrEmail" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" type="password" class="form-control">
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="mb-3 form-check">
+        <input asp-for="RememberMe" class="form-check-input">
+        <label asp-for="RememberMe" class="form-check-label"></label>
+    </div>
+    <a asp-action="ForgotPassword" class="text-decoration-none fs-4 d-block">Забули пароль?</a><br />
+    <a asp-action="GoogleLogin" class="btn btn-light btn-lg d-flex justify-content-center align-items-center shadow-sm border rounded-pill px-4 py-2 mb-4 mx-5">
+        <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google Logo" class="me-2" width="24" height="24">
+        <span>Вхід через Google</span>
+    </a>
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary">Увійти</button>
+        <a asp-action="Register" class="btn btn-success">Створити аккаунт</a>
+    </div>
+
+</form>

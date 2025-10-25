@@ -23,7 +23,7 @@ public class ProductsController(AppATBDbContext dbContext,
         return View(model);
     }
 
-    [HttpGet]    
+    [HttpGet]
     public IActionResult Create()
     {
         ProductCreateModel model = new ProductCreateModel();

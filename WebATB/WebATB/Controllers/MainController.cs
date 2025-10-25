@@ -12,8 +12,7 @@ using WebATB.Models.Category;
 namespace WebATB.Controllers;
 
 //звичайни клас, який наслідує Controller
-
-public class MainController(AppATBDbContext dbContext, 
+public class MainController(AppATBDbContext dbContext,
     IMapper mapper,
     IImageService imageService) : Controller
 {
@@ -57,7 +56,7 @@ public class MainController(AppATBDbContext dbContext,
         {
             return View(model);
         }
-        
+
         var fileName = string.Empty;
         if (model.Image != null)
         {
@@ -154,7 +153,7 @@ public class MainController(AppATBDbContext dbContext,
         {
             return NotFound();
         }
-        
+
         return View(category);
     }
 
