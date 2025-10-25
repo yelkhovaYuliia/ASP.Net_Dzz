@@ -37,7 +37,7 @@ public class ProductsController(AppATBDbContext dbContext,
     public IActionResult Create(ProductCreateModel model)
     {
         //var request = this.Request;
-        if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
         {
             model.Categories = dbContext.Categories
                 .ProjectTo<SelectItemHelper>(mapper.ConfigurationProvider)

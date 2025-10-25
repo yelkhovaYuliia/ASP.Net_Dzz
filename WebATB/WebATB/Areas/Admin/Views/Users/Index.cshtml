@@ -30,13 +30,12 @@
                             </div>
                         </td>
                         <td>
-                            @user.FullName
+                                @user.Email
                         </td>
-                        <td>@user.Email</td>
                         <td>
-                            @foreach (var role in user.Roles)
+                                @if (user.LockoutEnd != null)
                             {
-                                <span>@role </span>
+                                            <span class="badge rounded-pill bg-label-danger">Banned</span>
                             }
                         </td>
                         <td>
